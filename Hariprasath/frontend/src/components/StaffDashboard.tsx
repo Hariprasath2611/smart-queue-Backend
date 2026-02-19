@@ -106,7 +106,7 @@ const StaffDashboard = () => {
                             { icon: <Users size={20} />, label: 'Waiting', value: activeQueue.waitingCount, color: 'text-primary-400' },
                             { icon: <Clock size={20} />, label: 'Avg Wait', value: '12m', color: 'text-amber-400' },
                             { icon: <Activity size={20} />, label: 'Efficiency', value: '94%', color: 'text-emerald-400' },
-                            { icon: <CheckCircle size={20} />, label: 'Served', value: '42', color: 'text-blue-400' }
+                            { icon: <CheckCircle size={20} />, label: 'Served', value: '42', color: 'text-primary-400' }
                         ].map((stat, idx) => (
                             <div key={idx} className="glass-morphism rounded-2xl p-5">
                                 <div className={`${stat.color} mb-3`}>{stat.icon}</div>
