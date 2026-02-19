@@ -22,4 +22,12 @@ export class QueueController {
     async getStatus(@Param('tokenId') tokenId: string) {
         return this.queueService.getQueueStatus(tokenId);
     }
+
+    @Post('call-next/:queueId')
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Call the next person in queue' })
+    async callNext(@Param('queueId') queueId: string) {
+        return this.queueService.callNext(queueId);
+    }
 }
