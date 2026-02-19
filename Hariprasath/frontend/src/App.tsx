@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { Users, ShieldCheck, ArrowRight, Activity, Clock, LogIn } from 'lucide-react';
 import { motion } from 'framer-motion';

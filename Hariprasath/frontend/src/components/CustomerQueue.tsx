@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, Clock, ArrowLeft, Ticket, MapPin, ChevronRight, Activity } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -8,7 +8,7 @@ interface Service {
     name: string;
     waitTime: string;
     users: number;
-    icon: React.ReactNode;
+    icon: ReactNode;
 }
 
 interface Token {
