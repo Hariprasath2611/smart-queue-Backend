@@ -79,13 +79,16 @@ const LandingPage = () => (
   </div>
 );
 
+import CustomerQueue from './components/CustomerQueue';
+import StaffDashboard from './components/StaffDashboard';
+
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/customer" element={<div className="text-white p-10 text-center">Customer Flow - Coming Soon</div>} />
-        <Route path="/staff" element={<div className="text-white p-10 text-center">Staff Portal - Coming Soon</div>} />
+        <Route path="/customer" element={<CustomerQueue />} />
+        <Route path="/staff" element={<StaffDashboard />} />
       </Routes>
     </Router>
   );
