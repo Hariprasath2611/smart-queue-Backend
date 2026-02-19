@@ -1,6 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LogOut, CheckCircle, Users, Activity, Clock, Bell, ShieldCheck } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { queueApi } from '../api/queue';
+import { authApi } from '../api/auth';
 
 interface QueueState {
     id: string;
@@ -12,31 +15,65 @@ interface QueueState {
 
 const StaffDashboard = () => {
     const [activeQueue, setActiveQueue] = useState<QueueState>({
-        id: 'q1',
+        id: 'q1', // This should be fetched/selected
         name: 'Main Service',
-        waitingCount: 12,
-        currentToken: 'A104',
-        history: ['A103', 'A102', 'A101']
+        waitingCount: 0,
+        currentToken: '---',
+        history: []
     });
 
     const [isCalling, setIsCalling] = useState(false);
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
 
-    const handleCallNext = () => {
+    useEffect(() => {
+        const user = authApi.getCurrentUser();
+        if (!user || user.role === 'CUSTOMER') {
+            navigate('/login');
+            return;
+        }
+        // Ideally fetch current queue state here
+        fetchQueueState();
+    }, []);
+
+    const fetchQueueState = async () => {
+        try {
+            // Placeholder: currently no endpoint to get "active" queue for staff
+            // Assuming we might need to fetch stats or a specific queue
+            // For now, mirroring existing structure but ready for backend
+        } catch (err) {
+            setError('Failed to fetch queue state.');
+        }
+    };
+
+    const handleCallNext = async () => {
         setIsCalling(true);
-        // Simulation
-        setTimeout(() => {
+        setError('');
+        try {
+            const data = await queueApi.callNext(activeQueue.id);
+            if (data) {
+                setActiveQueue(prev => ({
+                    ...prev,
+                    currentToken: data.displayId,
+                    waitingCount: Math.max(0, prev.waitingCount - 1),
+                    history: [data.displayId, ...prev.history].slice(0, 5)
+                }));
+            } else {
+                setError('No one in queue.');
+            }
+        } catch (err: any) {
+            setError(err.response?.data?.message || 'Failed to call next token.');
+        } finally {
             setIsCalling(false);
-            setActiveQueue(prev => ({
-                ...prev,
-                waitingCount: Math.max(0, prev.waitingCount - 1),
-                currentToken: `A${parseInt(prev.currentToken.substring(1)) + 1}`,
-                history: [prev.currentToken, ...prev.history].slice(0, 5)
-            }));
-        }, 1500);
+        }
+    };
+
+    const handleLogout = () => {
+        authApi.logout();
     };
 
     return (
-        <div className="min-h-screen bg-[#0f172a] text-slate-200 p-4 md:p-8">
+        <div className="min-h-screen bg-[#020617] text-slate-200 p-4 md:p-8">
             {/* Header */}
             <nav className="flex items-center justify-between mb-12">
                 <div className="flex items-center space-x-3">
@@ -47,14 +84,23 @@ const StaffDashboard = () => {
                 </div>
                 <div className="flex items-center space-x-4">
                     <div className="hidden md:block text-right">
-                        <p className="text-sm font-medium text-white">Hariprasath</p>
-                        <p className="text-xs text-slate-500">Service Supervisor</p>
+                        <p className="text-sm font-medium text-white">{authApi.getCurrentUser()?.name || 'Staff'}</p>
+                        <p className="text-xs text-slate-500">{authApi.getCurrentUser()?.role || 'Service Supervisor'}</p>
                     </div>
-                    <button className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400">
+                    <button
+                        onClick={handleLogout}
+                        className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400"
+                    >
                         <LogOut size={20} />
                     </button>
                 </div>
             </nav>
+
+            {error && (
+                <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl mb-6 text-sm text-center">
+                    {error}
+                </div>
+            )}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Main Controls */}
@@ -139,7 +185,7 @@ const StaffDashboard = () => {
                                             </div>
                                             <div>
                                                 <p className="text-sm font-medium text-white">Completed</p>
-                                                <p className="text-xs text-slate-500">2 mins ago</p>
+                                                <p className="text-xs text-slate-500">Just now</p>
                                             </div>
                                         </div>
                                         <div className="text-emerald-500">

@@ -1,7 +1,7 @@
-import { useState, useEffect, type ReactNode } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Clock, ArrowLeft, Ticket, MapPin, ChevronRight, Activity, Building } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft, Ticket, MapPin, ChevronRight, Activity, Building } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { queueApi } from '../api/queue';
 import { authApi } from '../api/auth';
 
@@ -50,7 +50,6 @@ const CustomerQueue = () => {
         try {
             // For now, assuming we use a default org or fetch the first one
             // In a real app, you might select an organization first
-            const defaultOrgId = 'any-org-uuid'; // This should come from config or fetch
             const branchesData = await queueApi.getBranches(); // The API might need orgId
             setBranches(branchesData);
         } catch (err) {
