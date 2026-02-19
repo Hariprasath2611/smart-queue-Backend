@@ -1,26 +1,42 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Clock, ArrowLeft, CheckCircle, Ticket, MapPin, ChevronRight, Activity } from 'lucide-react';
+import { Users, Clock, ArrowLeft, Ticket, MapPin, ChevronRight, Activity } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const CustomerQueue = () => {
-    const [step, setStep] = useState('select'); // 'select' | 'confirm' | 'status'
-    const [selectedService, setSelectedService] = useState(null);
-    const [token, setToken] = useState(null);
+interface Service {
+    id: string;
+    name: string;
+    waitTime: string;
+    users: number;
+    icon: React.ReactNode;
+}
 
-    const services = [
+interface Token {
+    number: string;
+    queueName: string;
+    waitingAhead: number;
+    estTime: string;
+}
+
+const CustomerQueue = () => {
+    const [step, setStep] = useState<'select' | 'confirm' | 'status'>('select');
+    const [selectedService, setSelectedService] = useState<Service | null>(null);
+    const [token, setToken] = useState<Token | null>(null);
+
+    const services: Service[] = [
         { id: '1', name: 'General Consultation', waitTime: '15 min', users: 4, icon: <Users size={24} /> },
         { id: '2', name: 'Document Verification', waitTime: '45 min', users: 12, icon: <Ticket size={24} /> },
         { id: '3', name: 'Payment & Billing', waitTime: '5 min', users: 2, icon: <Activity size={24} /> },
         { id: '4', name: 'Technical Support', waitTime: '30 min', users: 7, icon: <Clock size={24} /> },
     ];
 
-    const handleJoin = (service) => {
+    const handleJoin = (service: Service) => {
         setSelectedService(service);
         setStep('confirm');
     };
 
     const confirmJoin = () => {
+        if (!selectedService) return;
         // Simulation
         setToken({
             number: 'A105',
@@ -92,7 +108,7 @@ const CustomerQueue = () => {
                         </motion.div>
                     )}
 
-                    {step === 'confirm' && (
+                    {step === 'confirm' && selectedService && (
                         <motion.div
                             key="confirm"
                             initial={{ opacity: 0, scale: 0.95 }}
@@ -123,7 +139,7 @@ const CustomerQueue = () => {
                         </motion.div>
                     )}
 
-                    {step === 'status' && (
+                    {step === 'status' && token && (
                         <motion.div
                             key="status"
                             initial={{ opacity: 0, y: 20 }}

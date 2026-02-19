@@ -1,9 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LogOut, Play, CheckCircle, Users, Activity, Clock, Bell } from 'lucide-react';
+import { LogOut, CheckCircle, Users, Activity, Clock, Bell, ShieldCheck } from 'lucide-react';
+
+interface QueueState {
+    id: string;
+    name: string;
+    waitingCount: number;
+    currentToken: string;
+    history: string[];
+}
 
 const StaffDashboard = () => {
-    const [activeQueue, setActiveQueue] = useState({
+    const [activeQueue, setActiveQueue] = useState<QueueState>({
         id: 'q1',
         name: 'Main Service',
         waitingCount: 12,
@@ -20,7 +28,7 @@ const StaffDashboard = () => {
             setIsCalling(false);
             setActiveQueue(prev => ({
                 ...prev,
-                waitingCount: prev.waitingCount - 1,
+                waitingCount: Math.max(0, prev.waitingCount - 1),
                 currentToken: `A${parseInt(prev.currentToken.substring(1)) + 1}`,
                 history: [prev.currentToken, ...prev.history].slice(0, 5)
             }));
@@ -99,8 +107,8 @@ const StaffDashboard = () => {
                             { icon: <Clock size={20} />, label: 'Avg Wait', value: '12m', color: 'text-amber-400' },
                             { icon: <Activity size={20} />, label: 'Efficiency', value: '94%', color: 'text-emerald-400' },
                             { icon: <CheckCircle size={20} />, label: 'Served', value: '42', color: 'text-blue-400' }
-                        ].map((stat, i) => (
-                            <div key={i} className="glass-morphism rounded-2xl p-5">
+                        ].map((stat, idx) => (
+                            <div key={idx} className="glass-morphism rounded-2xl p-5">
                                 <div className={`${stat.color} mb-3`}>{stat.icon}</div>
                                 <p className="text-2xl font-bold text-white">{stat.value}</p>
                                 <p className="text-xs text-slate-500 uppercase tracking-wider">{stat.label}</p>
@@ -118,7 +126,7 @@ const StaffDashboard = () => {
                         </h4>
                         <div className="space-y-4">
                             <AnimatePresence initial={false}>
-                                {activeQueue.history.map((token, i) => (
+                                {activeQueue.history.map((token) => (
                                     <motion.div
                                         key={token}
                                         initial={{ opacity: 0, x: -20 }}
@@ -152,4 +160,3 @@ const StaffDashboard = () => {
 };
 
 export default StaffDashboard;
-import { ShieldCheck } from 'lucide-react';
