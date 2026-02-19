@@ -80,12 +80,16 @@ const LandingPage = () => (
 
 import CustomerQueue from './components/CustomerQueue';
 import StaffDashboard from './components/StaffDashboard';
+import Login from './components/Login';
+import Register from './components/Register';
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/customer" element={<CustomerQueue />} />
         <Route path="/staff" element={<StaffDashboard />} />
       </Routes>
