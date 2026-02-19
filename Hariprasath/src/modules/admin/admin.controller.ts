@@ -26,6 +26,27 @@ export class AdminController {
         return this.adminService.createBranch(dto.orgId, dto.name, dto.address);
     }
 
+    @Get('organizations')
+    @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.CUSTOMER) // Allow customers to see orgs
+    @ApiOperation({ summary: 'List all organizations' })
+    async getOrgs() {
+        return this.adminService.getOrganizations();
+    }
+
+    @Get('branches/:orgId')
+    @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.CUSTOMER)
+    @ApiOperation({ summary: 'List branches of an organization' })
+    async getBranches(@Param('orgId') orgId: string) {
+        return this.adminService.getBranchesByOrg(orgId);
+    }
+
+    @Get('services/:orgId')
+    @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.CUSTOMER)
+    @ApiOperation({ summary: 'List services of an organization' })
+    async getServices(@Param('orgId') orgId: string) {
+        return this.adminService.getServicesByOrg(orgId);
+    }
+
     @Get('dashboard/:orgId')
     @Roles(Role.ADMIN, Role.SUPER_ADMIN)
     @ApiOperation({ summary: 'Get organization dashboard stats' })

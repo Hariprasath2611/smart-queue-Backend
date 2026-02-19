@@ -29,6 +29,22 @@ export class AdminService {
         });
     }
 
+    async getOrganizations() {
+        return this.prisma.organization.findMany();
+    }
+
+    async getBranchesByOrg(orgId: string) {
+        return this.prisma.branch.findMany({
+            where: { organizationId: orgId },
+        });
+    }
+
+    async getServicesByOrg(orgId: string) {
+        return this.prisma.service.findMany({
+            where: { organizationId: orgId },
+        });
+    }
+
     async getDashboardStats(orgId: string) {
         const branchCount = await this.prisma.branch.count({ where: { organizationId: orgId } });
         const serviceCount = await this.prisma.service.count({ where: { organizationId: orgId } });
